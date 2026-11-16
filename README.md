@@ -1,73 +1,57 @@
-# React + TypeScript + Vite
+# ToDo アプリ
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+やることを追加・編集・削除して管理できる ToDo アプリです。
+データはブラウザの中（localStorage）に保存します。
 
-Currently, two official plugins are available:
+## 作った理由
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+- React と TypeScript の基本を、1つのアプリを最後まで作りながら身につけるために作りました。
+- 最終的には React + TypeScript + Laravel + MySQL でアプリを作ることを目標にしています。その前の土台として、まずは画面側（フロントエンド）だけで完成させました。
+- サーバーとの連携（Laravel）は、このアプリではなく次のアプリで取り組みます。
 
-## React Compiler
+## できること
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- ToDo の追加・編集・削除
+- 完了 / 未完了の切り替え
+- 期限の設定（「今日」「明日」と表示し、期限切れはまとめて表示）
+- 絞り込み（すべて / 未完了 / 完了）
+- キーワード検索（半角・全角スペースで区切って複数の言葉で検索）
+- 件数の表示（表示中 / 未完了 / 完了）
+- 入力チェック（空の ToDo、同じ内容の ToDo は追加できない）
+- ブラウザを閉じても ToDo が残る（localStorage に保存）
 
-## Expanding the ESLint configuration
+## 工夫した点
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+- 検索では、日本語で入力する人を考えて、全角スペースでも区切れるようにしました。
+- localStorage から読み込んだデータが正しい形かを確かめてから使うようにしました（壊れたデータで画面が止まらないようにするため）。
+- 処理ごとにカスタムフック（useAddTodoForm、useEditTodo など）に分け、App.tsx が長くなりすぎないようにしました。
+- ToDo の一覧などのデータは Context でまとめて渡し、コンポーネントごとに受け渡しを書かなくて済むようにしました。
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+## 使った技術
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+- React 19
+- TypeScript
+- Vite
+- Tailwind CSS
+- localStorage
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+## 動かし方
+
+```bash
+npm install
+npm run dev
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+表示された URL（例：http://localhost:5173）をブラウザで開いてください。
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+## フォルダの中身
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```
+src/
+├── components/  画面の部品（入力欄、一覧、1件分の表示など）
+├── contexts/    ToDo のデータをまとめて渡す仕組み
+├── hooks/       追加・編集・削除・検索などの処理
+├── styles/      ボタンや入力欄の見た目
+├── utils/       期限の計算、データのチェック
+└── types.ts     ToDo の型
 ```
